@@ -18,8 +18,8 @@
 #define SW2 23 // For Final Run
 //Defing pins for RGB lights
 // #define R 13
-// #define G 33
-// #define B 32
+#define G 33
+#define B 32
 
 
 //Defining the number of sensors used [apart from the corner most ones], their pin numbers and an array to store their values
@@ -40,7 +40,7 @@ int  PIDvalue;
 float error, previousError , P , I , D;
 
 //Defining the max speed that can be attained by any one of the motor
-int max_speed=190;
+int max_speed=200;
 // Defining speeds of left and right motors
 int lsp = max_speed;
 int rsp = max_speed;
@@ -73,12 +73,12 @@ void setup() {
   // Settign the pins of rgb light to output
   pinMode(LED, OUTPUT);
   // pinMode(R, OUTPUT);
-  // pinMode(G, OUTPUT);
-  // pinMode(B, OUTPUT);
-  // // Initializing them to be off
-  // // digitalWrite(R, LOW);
-  // digitalWrite(G, LOW);
-  // digitalWrite(B, LOW);
+  pinMode(G, OUTPUT);
+  pinMode(B, OUTPUT);
+  // Initializing them to be off
+  // digitalWrite(R, LOW);
+  digitalWrite(G, LOW);
+  digitalWrite(B, LOW);
   // Initializing the push buttons as pull down [this depends on how you have set the circuit for the push button and may vary]
   pinMode(SW1, INPUT_PULLDOWN);
   pinMode(SW2, INPUT_PULLDOWN);
@@ -176,12 +176,6 @@ void loop()
              // RightWithForward();
             //}
             counter++;
-          }
-          else if(path[counter] == 'F'){
-            motor1run(0);
-            motor2run(0);
-            counter++;
-            delay(20);
           }
           else if(path[counter] == 'E'){
             motor1run(0);
@@ -474,15 +468,15 @@ void Turn_Right_Priority()
 
 void Left(){
   // 1 sec stop for testing
-  // motor1run(0);.
+  // motor1run(0);
   // motor2run(0);
   // delay(1000);
   //Glow CYAN colour for left turns
-  // digitalWrite(G, HIGH);
-  // digitalWrite(B, HIGH);
+  digitalWrite(G, HIGH);
+  digitalWrite(B, HIGH);
   //Keep rotating in this manner until all the while loops end
-  motor1run(50);
-  motor2run(-50);
+  motor1run(45);
+  motor2run(-45);
   //1st'ly let the 3rd sensor [i.e. the center right sensor] go to black [i.e. keep rotating until it is on white] [This while loop will immediately end in case forward DNE]
   GetSensorData();
   while(sensorValues[3]<=threshold_avg){
@@ -505,15 +499,15 @@ void Left(){
   delay(20);
   //This is to manage overshoot in the turn.
   //Rotate it in opposite manner
-  motor1run(-50);
-  motor2run(50);
+  motor1run(-45);
+  motor2run(45);
   // Until the 2nd sensor gets back on white.
   while(sensorValues[2]>threshold_avg){
     GetSensorData();
   }
   //Once the turn is done.turn the rgb light off
-  // digitalWrite(G, LOW);
-  // digitalWrite(B, LOW);
+  digitalWrite(G, LOW);
+  digitalWrite(B, LOW);
 }
 
 void LeftWithForward(){
@@ -523,11 +517,11 @@ void LeftWithForward(){
   // delay(1000);
 
   //Glow CYAN colour for left turns
-  // digitalWrite(G, HIGH);
-  // digitalWrite(B, HIGH);
+  digitalWrite(G, HIGH);
+  digitalWrite(B, HIGH);
   //Keep rotating in this manner until all the while loops end
-  motor1run(50);
-  motor2run(-50);
+  motor1run(45);
+  motor2run(-45);
   // The above logic of Left turn (in theory) works well in both the cases of forward existing and not but due to the bot reaching the turns slantly, [At times both the sensors 2 and 3 are on the opposite side of forward [i.e. both are on the right of forward]] in such a case, the left turn acts as a forward turn. Hence to get rid of the issue, this 2nd snippet of left turn exists.
   //Here we initiate the turn based on the rightmost sensor [since it is assured that the cornermost sensor shouldn't be incorrectly placed[if it is we are doomed anyways :(]]
   //Hence rotate until the rightmost sensor 1stly reaches white 
@@ -551,13 +545,13 @@ void LeftWithForward(){
   motor1run(0);
   motor2run(0);
   delay(20);
-  motor1run(-50);
-  motor2run(50);
+  motor1run(-45);
+  motor2run(45);
   while(sensorValues[2]>threshold_avg){
     GetSensorData();
   }
-  // digitalWrite(G, LOW);
-  // digitalWrite(B, LOW);
+  digitalWrite(G, LOW);
+  digitalWrite(B, LOW);
   // Serial.println("");
 }
 // Same as that of left
@@ -566,10 +560,10 @@ void Right(){
   // motor1run(0);
   // motor2run(0);
   // delay(1000);
-  // digitalWrite(G, HIGH);
+  digitalWrite(G, HIGH);
   GetSensorData();
-  motor1run(-50);
-  motor2run(50);
+  motor1run(-45);
+  motor2run(45);
   while(sensorValues[2]<=threshold_avg){
     GetSensorData();
   }
@@ -581,12 +575,12 @@ void Right(){
   motor1run(0);
   motor2run(0);
   delay(20);
-  motor1run(50);
-  motor2run(-50);
+  motor1run(45);
+  motor2run(-45);
   while(sensorValues[3]>threshold_avg){
     GetSensorData();
   }
-  // digitalWrite(G, LOW);
+  digitalWrite(G, LOW);
 }
 
 // Same as that of Left With Forward
@@ -595,10 +589,10 @@ void RightWithForward(){
   // motor1run(0);
   // motor2run(0);
   // delay(1000);
-  // digitalWrite(G, HIGH);
+  digitalWrite(G, HIGH);
   GetSensorData();
-  motor1run(-50);
-  motor2run(50);
+  motor1run(-45);
+  motor2run(45);
   while(sensorValues[0]>threshold_avg){
     GetSensorData();
   }
@@ -613,12 +607,12 @@ void RightWithForward(){
   motor1run(0);
   motor2run(0);
   delay(20);
-  motor1run(50);
-  motor2run(-50);
+  motor1run(45);
+  motor2run(-45);
   while(sensorValues[3]>threshold_avg){
     GetSensorData();
   }
-  // digitalWrite(G, LOW);
+  digitalWrite(G, LOW);
 }
 
 void Backward(){
@@ -632,7 +626,7 @@ void Backward(){
   motor2run(0);
   delay(100);
   //Glow blue light for backward turns
-  // digitalWrite(B, HIGH);
+  digitalWrite(B, HIGH);
   //same rsp, lsp logic to correctly align the bot
   motor1run(rsp);
   motor2run(lsp);
@@ -643,8 +637,8 @@ void Backward(){
   delay(80);
   //Finally take the U-turn [Just choosen to do it as a right turn [could have done it left as well]]
   GetSensorData();
-  motor1run(-50);
-  motor2run(50);
+  motor1run(-45);
+  motor2run(45);
   // rotate until both the sensors have reached the center
   while(sensorValues[2]>threshold_avg && sensorValues[3]>threshold_avg){
     GetSensorData();
@@ -653,15 +647,15 @@ void Backward(){
   motor1run(0);
   motor2run(0);
   delay(20);
-  motor1run(50);
-  motor2run(-50);
+  motor1run(45);
+  motor2run(-45);
   while(sensorValues[3]>threshold_avg){
     GetSensorData();
   }
   //Although U-turn isn't a turn, but during the U-turn, one of the corner sensor crosses the white line, which calls the interrupt and sets the flag to 1. Since we know that this is a mistake, hence equating it back to zero
   flag_turn=0;
   //Turn off the rgb light
-  // digitalWrite(B, LOW);
+  digitalWrite(B, LOW);
 }
 //Simply analogRead's all the sensor's data
 void GetSensorData(){
@@ -689,7 +683,7 @@ void PID()
   // Ki might be used to get of the error that the sesnors have in themselves [like value of each sensor when tested, varies by 10- 30]
   float error = 0.0* sensorValues[0] + 0.3 * sensorValues[1] + sensorValues[2] - sensorValues[3] - 0.3 * sensorValues[4] - 0.0* sensorValues[5];
   // Set a basespeed from which the PIDvalue is either added or substracted
-  int basespeed = 140;
+  int basespeed = 150;
   //Rest is the basic logic of PID line following
   P = error;
   D = error - previousError;
